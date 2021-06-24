@@ -6,24 +6,24 @@ using UnityEngine.EventSystems;
 
 public class FormsDrag : MonoBehaviour
 {
-    [Range(0f, 1f)]
-    [Tooltip("The accuracy you need for the form to be placed. The higher the easier")]
-    public float radiusDifficulty = 1f;
 
+    private float radiusDifficulty;
 
-    bool isFollowing = false; // Trigger to know when an object is following the mouse
-    Type myCollider;     //Open type to check what collider exactly it hits
-    Vector3 initPos;
-    Vector3 properPos;
+    bool isFollowing = false;   // Trigger to know when an object is following the mouse
+    Vector3 initPos;        // Position at start
+    Vector3 properPos;      // Position that should be locked at
 
-
+    static List<FormsDrag> pegs = new List<FormsDrag>();
     Vector3 worldMousePos;
 
     // Start is called before the first frame update
     void Start()
     {
         initPos = transform.position;
-        myCollider = GetComponent<Collider2D>().GetType(); // Get my Collider, no matter which one it is
+        pegs.Add(this);         //Add every peg to the list
+
+        //Set radius difficulty
+        radiusDifficulty = GameManager.Instance.difficulty;
     }
 
 
@@ -39,7 +39,6 @@ public class FormsDrag : MonoBehaviour
         if (CheckIfRightShape())
         {
             HandleCorrectConnect();
-            SoundManager.Instance.PlaySound(SoundManager.soundClip.correct);
         }
         else
         {
@@ -50,7 +49,7 @@ public class FormsDrag : MonoBehaviour
 
     private void Update()
     {
-        worldMousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);    
+        worldMousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
     }
 
     void LateUpdate()
@@ -87,23 +86,43 @@ public class FormsDrag : MonoBehaviour
 
 
     /// <summary>
-    /// Locks in the position and make it not clickable anymore
+    /// Locks in the position, make it not clickable anymore and play the right sfx
     /// </summary>
     void HandleCorrectConnect()
     {
         transform.position = properPos;
         GetComponent<Collider2D>().enabled = false;
+        RemoveFromList();     // Remove the Peg from the list
+
+        // Play the right sound effect
+        if (pegs.Count <= 0)
+        {
+            SoundManager.Instance.PlaySound(SoundManager.soundClip.success);
+            GameManager.Instance.ShowEndGameScreen();
+        }
+        else
+        {
+            SoundManager.Instance.PlaySound(SoundManager.soundClip.correct);
+        }
+
     }
 
 
+    /// <summary>
+    /// Remove the peg from the list
+    /// </summary>
+    public void RemoveFromList()
+    {
+        pegs.Remove(this);
+    }
 
     /// <summary>
     /// To be able to see the radius of the difficulty
     /// </summary>
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.blue;
-        Gizmos.DrawSphere(transform.position, radiusDifficulty);
-    }
+    //private void OnDrawGizmos()
+    //{
+    //    Gizmos.color = Color.blue;
+    //    Gizmos.DrawSphere(transform.position, radiusDifficulty);
+    //}
 
 }

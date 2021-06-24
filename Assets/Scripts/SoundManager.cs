@@ -28,6 +28,8 @@ public class SoundManager : MonoBehaviour
         {
             Destroy(this.gameObject);
         }
+
+        DontDestroyOnLoad(this);
     }
 
     public void PlaySound(soundClip sfx)
