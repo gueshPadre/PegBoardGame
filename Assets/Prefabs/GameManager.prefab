@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8003448568053594229}
   - component: {fileID: 8003448568053594226}
+  - component: {fileID: 4257625482851616815}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -45,4 +46,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   completedCanvas: {fileID: 4254682749911324254, guid: d4826cf969f50d945802c8241d4bf68b,
     type: 3}
+  starPrefab: {fileID: 0}
+  timerThresholdBest: 0
+  timerThresholdMid: 0
   difficulty: 1
+--- !u!114 &4257625482851616815
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8003448568053594227}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f875e9622be0b5948812f03501062bb4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  startCanvas: {fileID: 6624072528289434576, guid: 6d769ebdfc5741e4183971f8a5c6d90d,
+    type: 3}
