@@ -8,19 +8,23 @@ public class FormsDrag : MonoBehaviour
 {
 
     private float radiusDifficulty;
+    public bool IsInList { get; private set; }   //Trigger to know if it's in the list or not
 
     bool isFollowing = false;   // Trigger to know when an object is following the mouse
     Vector3 initPos;        // Position at start
     Vector3 properPos;      // Position that should be locked at
 
-    static List<FormsDrag> pegs = new List<FormsDrag>();
+    Vector3 initScale;      // Scale at start
+
+    static List<FormsDrag> pegs = new List<FormsDrag>();    //keep track of the number of pegs we have
     Vector3 worldMousePos;
 
     // Start is called before the first frame update
     void Start()
     {
-        initPos = transform.position;
+        initScale = transform.localScale;
         pegs.Add(this);         //Add every peg to the list
+        IsInList = true;
 
         //Set radius difficulty
         radiusDifficulty = GameManager.Instance.difficulty;
@@ -29,6 +33,7 @@ public class FormsDrag : MonoBehaviour
 
     private void OnMouseDown()
     {
+        initPos = transform.position;
         isFollowing = true;
     }
 
@@ -43,7 +48,17 @@ public class FormsDrag : MonoBehaviour
         else
         {
             SoundManager.Instance.PlaySound(SoundManager.soundClip.wrong);
-            transform.position = initPos;   // return to initial position
+            transform.position = initPos;   // return to clicked position
+        }
+    }
+
+    // Handles level two mechanic when done hovering over a form
+    private void OnMouseExit()
+    {
+        //object is in correct place
+        if (!isFollowing && IsInList)
+        {
+            transform.localScale = initScale;
         }
     }
 
@@ -66,7 +81,6 @@ public class FormsDrag : MonoBehaviour
     bool CheckIfRightShape()
     {
         int myLayerMask = ~LayerMask.GetMask("Default");    //exclude my own layerMask
-        //Collider2D otherCollider;
 
         // Get all colliders and check if there's one that's a good fit
         Collider2D[] otherColliders = Physics2D.OverlapCircleAll(transform.position, radiusDifficulty, myLayerMask);
@@ -90,7 +104,9 @@ public class FormsDrag : MonoBehaviour
     /// </summary>
     void HandleCorrectConnect()
     {
+        // Set the right position and scale
         transform.position = properPos;
+        transform.localScale = new Vector3(1, 1, 1);
         GetComponent<Collider2D>().enabled = false;
         RemoveFromList();     // Remove the Peg from the list
 
@@ -109,11 +125,12 @@ public class FormsDrag : MonoBehaviour
 
 
     /// <summary>
-    /// Remove the peg from the list
+    /// Removes the peg from the list
     /// </summary>
     public void RemoveFromList()
     {
         pegs.Remove(this);
+        IsInList = false;
     }
 
     /// <summary>

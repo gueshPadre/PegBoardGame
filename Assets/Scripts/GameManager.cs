@@ -30,33 +30,21 @@ public class GameManager : MonoBehaviour
         {
             Destroy(this.gameObject);
         }
-
-        DontDestroyOnLoad(this);
     }
-
-    private void Update()
-    {
-        //Only for debug purposes! TODO: Remove this
-        if (Input.GetKeyDown(KeyCode.D))
-        {
-            ShowEndGameScreen();
-        }
-
-    }
-
 
 
     /// <summary>
-    /// Create the 'Completed' Canvas screen
+    /// Create the 'Completed' Canvas screen. Called from FormsDrag
     /// </summary>
     public void ShowEndGameScreen()
     {
-        float timer = FindObjectOfType<Timer>().timer;
+        Timer time = GetComponent<Timer>();
+        float timer = time.timer;
         canvasInst = Instantiate(completedCanvas);
 
         if (timer <= timerThresholdBest)
         {
-            print("Get 3 stars");
+            print("Get 3 stars with a time of: " + timer.ToString("##.##"));
             ShowStars(3);
         }
         else if (timer > timerThresholdBest && timer < timerThresholdMid)
@@ -69,8 +57,14 @@ public class GameManager : MonoBehaviour
             print("Get 1 star with " + timer.ToString("##.##"));
             ShowStars(1);
         }
+
+        time.StopTimer();
     }
 
+    /// <summary>
+    /// Create and display the stars that the player got according to his time
+    /// </summary>
+    /// <param name="starNum">The amount of stars the player deserves</param>
     void ShowStars(int starNum)
     {
         Vector3 initPos = new Vector3(-100f, -90f);
@@ -88,6 +82,7 @@ public class GameManager : MonoBehaviour
             Vector3 starPos = starImage.GetComponent<RectTransform>().localPosition;
             starPos.x = x;
             starImage.GetComponent<RectTransform>().localPosition = starPos;
+
             if (index < starNum )
             {
                 stars[index].GetComponent<Image>().color = Color.white;        // Make the stars appear yellow

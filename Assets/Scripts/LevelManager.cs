@@ -10,6 +10,8 @@ public class LevelManager : MonoBehaviour
 
     private void Start()
     {
+        //Singleton pattern
+        DontDestroyOnLoad(this);
         if (Instance == null) 
         {
             Instance = this;
@@ -24,7 +26,11 @@ public class LevelManager : MonoBehaviour
     public void GoToNextLevel()
     {
         int currentIndex = SceneManager.GetActiveScene().buildIndex;
-        SceneManager.LoadScene(currentIndex +1);
+        // Only go to next level if we're on the first level
+        if (currentIndex == 0)
+        {
+            SceneManager.LoadScene(currentIndex + 1); 
+        }
     }
 
 }

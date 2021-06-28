@@ -9,13 +9,7 @@ public class Timer : MonoBehaviour
     bool hasStarted = false;    //indicates when the timer has started
 
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
 
-    // Update is called once per frame
     void Update()
     {
         if (hasStarted)
@@ -28,6 +22,12 @@ public class Timer : MonoBehaviour
     {
         hasStarted = true;
         startCanvas.gameObject.SetActive(false);
-
     }
+
+    public void StopTimer()
+    {
+        hasStarted = false;
+        timer = 0f;
+    }
+
 }
